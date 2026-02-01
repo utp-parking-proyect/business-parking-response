@@ -26,4 +26,5 @@ public interface RequestRepository extends R2dbcRepository<Request, Integer> {
       @Param("requestDto") RequestDto requestDto,
       @Param("dateResponse") LocalDateTime dateResponse
   );
+
 }

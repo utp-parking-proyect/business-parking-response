@@ -33,6 +33,7 @@ public class ResponseServiceImpl implements ResponseService {
   @Override
   public Mono<Request> responseRequest(Integer requestId, RequestDto request) {
     return updateRequest(requestId, request)
+        .then(validateRequest(requestId))
         .then(processVehicleIfNeeded(requestId, request))
         .flatMap(this::updateWorkflow)
         .then(saveWorkflow(requestId, request.getStatusId()))
@@ -66,5 +67,17 @@ public class ResponseServiceImpl implements ResponseService {
 
   private Mono<Void> saveWorkflow(Integer requestId, Integer statusId) {
     return workflowRepository.saveWorkflow(requestId, statusId, LocalDateTime.now()).then();
+  }
+
+  private Mono<String> validateRequest(Integer requestId) {
+    return requestRepository.findById(requestId)
+        .flatMap(request -> {
+          if (request.getIdStatus().equals(ID_STATUS_IN_REVISION)) {
+            return Mono.just("Valid");
+          } else {
+            return Mono.error(new IllegalStateException(
+                "The request is not in a valid state for response."));
+          }
+        });
   }
 }
