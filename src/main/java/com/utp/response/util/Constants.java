@@ -2,7 +2,7 @@ package com.utp.response.util;
 
 public final class Constants {
 
-  public Constants() {
+  private Constants() {
     throw new IllegalStateException("Utility class");
   }
 
