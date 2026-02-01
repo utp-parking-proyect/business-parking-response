@@ -32,8 +32,8 @@ public class ResponseServiceImpl implements ResponseService {
 
   @Override
   public Mono<Request> responseRequest(Integer requestId, RequestDto request) {
-    return updateRequest(requestId, request)
-        .then(validateRequest(requestId))
+    return validateRequest(requestId)
+        .then(updateRequest(requestId, request))
         .then(processVehicleIfNeeded(requestId, request))
         .flatMap(this::updateWorkflow)
         .then(saveWorkflow(requestId, request.getStatusId()))
@@ -71,8 +71,9 @@ public class ResponseServiceImpl implements ResponseService {
 
   private Mono<String> validateRequest(Integer requestId) {
     return requestRepository.findById(requestId)
+        .switchIfEmpty(Mono.error(new IllegalArgumentException("Request not found: " + requestId)))
         .flatMap(request -> {
-          if (request.getIdStatus().equals(ID_STATUS_IN_REVISION)) {
+          if (ID_STATUS_IN_REVISION.equals(request.getIdStatus())) {
             return Mono.just("Valid");
           } else {
             return Mono.error(new IllegalStateException(
