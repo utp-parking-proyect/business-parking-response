@@ -20,7 +20,7 @@ public class ResponseController {
 
   private final ResponseService responseService;
 
-  @GetMapping
+  @GetMapping("/all")
   public Flux<Request> getAllRequests() {
     return responseService.getAllRequests();
   }
