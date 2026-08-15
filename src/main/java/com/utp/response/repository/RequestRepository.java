@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public interface RequestRepository extends R2dbcRepository<Request, Integer> {
 
   @Query("""
-      UPDATE requests
+      UPDATE parking_requests
       SET id_status = :idStatus,
           date_response = :dateResponse
       WHERE id_request = :idRequest;
