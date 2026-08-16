@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDateTime;
 
 @Data
-@Table("workflow")
+@Table("parking_request_workflow")
 public class Workflow {
 
   @Id
